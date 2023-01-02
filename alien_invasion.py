@@ -57,20 +57,28 @@ class AlienInvasion:
 				mouse_pos = pygame.mouse.get_pos()
 				self._check_play_button(mouse_pos)
 
+	def _start_game(self):
+		#Reset the game statistics.
+		self.stats.reset_stats()
+		self.stats.game_active = True
+
+		self.aliens.empty()
+		self.bullets.empty()
+
+		self._create_fleet()
+		self.ship.center_ship()
+
+		pygame.mouse.set_visible(False)
+
 	def _check_play_button(self, mouse_pos):
-		if self.play_button.rect.collidepoint(mouse_pos):
-			#Reset the game statistics.
-			self.stats.reset_stats()
-			self.stats.game_active = True
-
-			self.aliens.empty()
-			self.bullets.empty()
-
-			self._create_fleet()
-			self.ship.center_ship()
+		self.button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+		if self.button_clicked and not self.stats.game_active:
+			self._start_game()
 
 	def _check_keydown_events(self, event):
 		"""Respond to key presses."""
+		if event.key == pygame.K_p and not self.stats.game_active:
+			self._start_game()
 		if event.key == pygame.K_RIGHT:
 			self.ship.moving_right = True
 		elif event.key == pygame.K_LEFT:
@@ -145,6 +153,7 @@ class AlienInvasion:
 
 		else:
 			self.stats.game_active = False
+			pygame.mouse.set_visible(True)
 
 	def _create_fleet(self):
 		#Create an alien and find the number of aliens in a row.
