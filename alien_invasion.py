@@ -31,6 +31,23 @@ class AlienInvasion:
 		self._create_fleet()
 
 		self.play_button = Button(self, "Play")
+		
+		self._make_difficulty_buttons()
+
+	def _make_difficulty_buttons(self):
+		"""Make buttons that allow player to select difficulty level."""
+		self.easy_button = Button(self, "Easy")
+		self.medium_button = Button(self, "Medium")
+		self.difficult_button = Button(self, "Difficult")
+
+		self.easy_button.rect.top = (self.play_button.rect.top + 1.5 * self.play_button.rect.height)
+		self.easy_button._update_msg_position()
+
+		self.medium_button.rect.top = (self.easy_button.rect.top + 1.5 * self.easy_button.rect.height)
+		self.medium_button._update_msg_position()
+
+		self.difficult_button.rect.top = (self.medium_button.rect.top + 1.5 * self.medium_button.rect.height)
+		self.difficult_button._update_msg_position() 
 
 	def run_game(self):
 		"""Start the main loop for the game."""
@@ -56,9 +73,28 @@ class AlienInvasion:
 			elif event.type == pygame.MOUSEBUTTONDOWN:
 				mouse_pos = pygame.mouse.get_pos()
 				self._check_play_button(mouse_pos)
+				self._check_difficulty_buttons(mouse_pos)
+
+	def _check_play_button(self, mouse_pos):
+		self.button_clicked = self.play_button.rect.collidepoint(mouse_pos)
+		if self.button_clicked and not self.stats.game_active:
+			self._start_game()
+
+	def _check_difficulty_buttons(self, mouse_pos):
+		easy_button_clicked = self.easy_button.rect.collidepoint(mouse_pos)
+		medium_button_clicked = self.medium_button.rect.collidepoint(mouse_pos)
+		difficult_button_clicked = self.difficult_button.rect.collidepoint(mouse_pos)
+		
+		if easy_button_clicked:
+			self.settings.difficulty_level = 'Easy'
+		elif medium_button_clicked:
+			self.settings.difficulty_level = 'Medium'
+		elif difficult_button_clicked:
+			self.settings.difficulty_level = 'Difficult'
 
 	def _start_game(self):
 		#Reset the game statistics.
+		self.settings.initialize_dynamic_settings()
 		self.stats.reset_stats()
 		self.stats.game_active = True
 
@@ -69,12 +105,6 @@ class AlienInvasion:
 		self.ship.center_ship()
 
 		pygame.mouse.set_visible(False)
-
-	def _check_play_button(self, mouse_pos):
-		self.button_clicked = self.play_button.rect.collidepoint(mouse_pos)
-		if self.button_clicked and not self.stats.game_active:
-			self.settings.initialize_dynamic_settings()
-			self._start_game()
 
 	def _check_keydown_events(self, event):
 		"""Respond to key presses."""
@@ -205,6 +235,9 @@ class AlienInvasion:
 
 		if not self.stats.game_active:
 			self.play_button.draw_button()
+			self.easy_button.draw_button()
+			self.medium_button.draw_button()
+			self.difficult_button.draw_button()
 		# Make the most recently drawn screen visible.
 		pygame.display.flip()
 
