@@ -18,6 +18,10 @@ class Scoreboard:
 		self.font = pygame.font.SysFont(None, 48)
 
 		#Prepare the initial score image.
+		self.prep_images()
+
+	def prep_images(self):
+		"""Draws scoreboard images on the screen."""
 		self.prep_score()
 		self.prep_highscore()
 		self.prep_level()
@@ -58,7 +62,7 @@ class Scoreboard:
 			self.ships.add(ship)
 
 	def check_high_score(self):
-		"""Check to see if there;s a new high score."""
+		"""Check to see if there is a new high score."""
 		if self.stats.score > self.stats.high_score:
 			self.stats.high_score = self.stats.score
 			self.prep_highscore()

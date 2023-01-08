@@ -101,9 +101,7 @@ class AlienInvasion:
 		#Reset the game statistics.
 		self.settings.initialize_dynamic_settings()
 		self.stats.reset_stats()
-		self.scoreboard.prep_score()
-		self.scoreboard.prep_level()
-		self.scoreboard.prep_ships()
+		self.scoreboard.prep_images()
 		self.stats.game_active = True
 
 		self.aliens.empty()
@@ -156,12 +154,16 @@ class AlienInvasion:
 			self.scoreboard.prep_score()
 			self.scoreboard.check_high_score()
 		if not self.aliens:
-			self.bullets.empty()
-			self._create_fleet()
-			self.settings.increase_speed()
+			self.start_new_level()
 
-			self.stats.level += 1
-			self.scoreboard.prep_level()
+	def start_new_level(self):
+
+		self.bullets.empty()
+		self._create_fleet()
+		self.settings.increase_speed()
+
+		self.stats.level += 1
+		self.scoreboard.prep_level()
 
 	def _update_aliens(self):
 		"""Update the positions of all aliens in the fleet."""
