@@ -1,6 +1,8 @@
 import sys
 from time import sleep
 
+import json
+
 import pygame
 from pygame.sprite import Group
 
@@ -50,7 +52,7 @@ class AlienInvasion:
 		self.medium_button._update_msg_position()
 
 		self.difficult_button.rect.top = (self.medium_button.rect.top + 1.5 * self.medium_button.rect.height)
-		self.difficult_button._update_msg_position() 
+		self.difficult_button._update_msg_position()
 
 	def run_game(self):
 		"""Start the main loop for the game."""
@@ -68,7 +70,7 @@ class AlienInvasion:
 		"""Respond to keypresses and mouse events."""
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
-				sys.exit()
+				self._close_game()
 			elif event.type == pygame.KEYDOWN:
 				self._check_keydown_events(event)
 			elif event.type == pygame.KEYUP:
@@ -123,7 +125,7 @@ class AlienInvasion:
 		elif event.key == pygame.K_SPACE:
 			self._fire_bullet()
 		elif event.key == pygame.K_q:
-			sys.exit()
+			self._close_game()
 
 	def _check_keyup_events(self,event):
 		if event.key == pygame.K_RIGHT:
@@ -256,6 +258,15 @@ class AlienInvasion:
 			self.difficult_button.draw_button()
 		# Make the most recently drawn screen visible.
 		pygame.display.flip()
+
+	def _close_game(self):
+		"""Save high score to a json file and exit."""
+		saved_high_score = self.stats.get_saved_high_score()
+		if self.stats.high_score > saved_high_score:
+			with open('high_score.json', 'w') as f:
+				json.dump(self.stats.high_score, f)
+
+		sys.exit()
 
 if __name__ == '__main__':
 	# Make a game instance, and run the game.
