@@ -2,9 +2,11 @@ import sys
 from time import sleep
 
 import pygame
+from pygame.sprite import Group
 
 from settings import Settings
 from game_stats import GameStats
+from scoreboard import Scoreboard
 from button import Button
 from ship import Ship
 from bullet import Bullet
@@ -24,6 +26,7 @@ class AlienInvasion:
 		pygame.display.set_caption("AlienInvasion")
 
 		self.stats = GameStats(self)
+		self.scoreboard = Scoreboard(self)
 
 		self.ship = Ship(self)
 		self.bullets = pygame.sprite.Group()
@@ -96,6 +99,9 @@ class AlienInvasion:
 		#Reset the game statistics.
 		self.settings.initialize_dynamic_settings()
 		self.stats.reset_stats()
+		self.scoreboard.prep_score()
+		self.scoreboard.prep_level()
+		self.scoreboard.prep_ships()
 		self.stats.game_active = True
 
 		self.aliens.empty()
@@ -142,10 +148,18 @@ class AlienInvasion:
 
 	def _check_bullet_alien_collisions(self):
 		collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+		if collisions:
+			for aliens in collisions.values():
+				self.stats.score += self.settings.alien_points * len(aliens)
+			self.scoreboard.prep_score()
+			self.scoreboard.check_high_score()
 		if not self.aliens:
 			self.bullets.empty()
 			self._create_fleet()
 			self.settings.increase_speed()
+
+			self.stats.level += 1
+			self.scoreboard.prep_level()
 
 	def _update_aliens(self):
 		"""Update the positions of all aliens in the fleet."""
@@ -167,10 +181,10 @@ class AlienInvasion:
 
 	def _ship_hit(self):
 		"""Respond to the ship being hit by an alien."""
-		# Decrement ships left.
 		if self.stats.ships_left > 0:
-
+			# Decrement ships left and update scoreboard.
 			self.stats.ships_left -= 1	
+			self.scoreboard.prep_ships()
 
 			# Get rid of any remaining aliens and bullets.
 			self.bullets.empty()
@@ -232,6 +246,8 @@ class AlienInvasion:
 		for bullet in self.bullets.sprites():
 			bullet.draw_bullet()
 		self.aliens.draw(self.screen)
+
+		self.scoreboard.show_score()
 
 		if not self.stats.game_active:
 			self.play_button.draw_button()
