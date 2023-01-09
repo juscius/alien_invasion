@@ -243,6 +243,12 @@ class AlienInvasion:
 			alien.rect.y += self.settings.fleet_drop_speed
 		self.settings.fleet_direction *= -1
 
+	def draw_buttons(self):
+			self.play_button.draw_button()
+			self.easy_button.draw_button()
+			self.medium_button.draw_button()
+			self.difficult_button.draw_button()		
+
 	def _update_screen(self):
 		"""Update images on the screen, and flip to the new screen."""
 		self.screen.fill(self.settings.background_color)
@@ -254,10 +260,8 @@ class AlienInvasion:
 		self.scoreboard.show_score()
 
 		if not self.stats.game_active:
-			self.play_button.draw_button()
-			self.easy_button.draw_button()
-			self.medium_button.draw_button()
-			self.difficult_button.draw_button()
+			self.draw_buttons()
+
 		# Make the most recently drawn screen visible.
 		pygame.display.flip()
 
