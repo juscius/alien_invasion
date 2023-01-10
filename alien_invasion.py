@@ -92,10 +92,16 @@ class AlienInvasion:
 		
 		if easy_button_clicked:
 			self.settings.difficulty_level = 'Easy'
+			self.easy_button.reset_button_boarders_color()
+			self.easy_button.change_button_boarder_color()
 		elif medium_button_clicked:
 			self.settings.difficulty_level = 'Medium'
+			self.medium_button.reset_button_boarders_color()
+			self.medium_button.change_button_boarder_color()	
 		elif difficult_button_clicked:
 			self.settings.difficulty_level = 'Difficult'
+			self.difficult_button.reset_button_boarders_color()
+			self.difficult_button.change_button_boarder_color()
 
 	def _start_game(self):
 		#Reset the game statistics.
@@ -247,7 +253,11 @@ class AlienInvasion:
 			self.play_button.draw_button()
 			self.easy_button.draw_button()
 			self.medium_button.draw_button()
-			self.difficult_button.draw_button()		
+			self.difficult_button.draw_button()	
+	def draw_buttons_boarders(self):
+			self.easy_button.draw_button_boarders()
+			self.medium_button.draw_button_boarders()
+			self.difficult_button.draw_button_boarders()
 
 	def _update_screen(self):
 		"""Update images on the screen, and flip to the new screen."""
@@ -261,6 +271,7 @@ class AlienInvasion:
 
 		if not self.stats.game_active:
 			self.draw_buttons()
+			self.draw_buttons_boarders()
 
 		# Make the most recently drawn screen visible.
 		pygame.display.flip()
