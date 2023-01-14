@@ -13,6 +13,7 @@ from button import Button
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+import sound_effects as se
 
 class AlienInvasion:
 	"""Overall class to manage game assets and behavior."""
@@ -142,6 +143,7 @@ class AlienInvasion:
 		if len(self.bullets) < self.settings.bullets_allowed:
 			new_bullet = Bullet(self)
 			self.bullets.add(new_bullet)
+			se.bullet_sound.play()
 
 	def _update_bullets(self):
 		self.bullets.update()
@@ -159,8 +161,10 @@ class AlienInvasion:
 				self.stats.score += self.settings.alien_points * len(aliens)
 			self.scoreboard.prep_score()
 			self.scoreboard.check_high_score()
+			se.alien_sound.play()
 		if not self.aliens:
 			self.start_new_level()
+
 
 	def start_new_level(self):
 
@@ -253,7 +257,8 @@ class AlienInvasion:
 			self.play_button.draw_button()
 			self.easy_button.draw_button()
 			self.medium_button.draw_button()
-			self.difficult_button.draw_button()	
+			self.difficult_button.draw_button()
+
 	def draw_buttons_boarders(self):
 			self.easy_button.draw_button_boarders()
 			self.medium_button.draw_button_boarders()
